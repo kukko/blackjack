@@ -26,7 +26,7 @@ class GameService{
 		return game;
 	}
 	static generateGameName(){
-		return "#" + this.games.length + 1;
+		return "#" + (this.games.length + 1);
 	}
 	static joinGame(connectionId, playerName){
 		return this.findGame().addPlayer(connectionId, playerName);
