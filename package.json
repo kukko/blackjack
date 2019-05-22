@@ -1,0 +1,23 @@
+{
+  "name": "blackjack",
+  "version": "1.0.0",
+  "description": "A simple server and client based blackjack game.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kukko/blackjack.git"
+  },
+  "author": "kukko <nyariag@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kukko/blackjack/issues"
+  },
+  "homepage": "https://github.com/kukko/blackjack#readme",
+  "dependencies": {
+    "web-wombat": "^1.6.1"
+  }
+}
