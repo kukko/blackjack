@@ -29,7 +29,7 @@ class GameController extends WebSocketController{
 		let me = game.findPlayerWithConnectionId(this.uuid);
 		for (let playerIndex in game.players){
 			let player = game.players[playerIndex];
-			if (player.connectionId !== this.uuid){
+			if (!player.isAI && player.connectionId !== this.uuid){
 				this.sendTo(player.connectionId, JSON.stringify({
 					method: "playerJoined",
 					data: {

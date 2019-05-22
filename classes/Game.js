@@ -1,10 +1,12 @@
 let Player = require("./Player.js");
 
 class Game{
-	constructor(name, openTime = 15){
+	constructor(name, dealerStopAt = 15, openTime = 15, numberOfAI = 1){
 		this._started = new Date();
 		this._players = [];
+		this.addAIs(numberOfAI);
 		this._name = name;
+		this._dealerStopAt = dealerStopAt;
 		this._openTime = openTime;
 	}
 	get started(){
@@ -16,8 +18,19 @@ class Game{
 	get name(){
 		return this._name;
 	}
+	get dealerStopAt(){
+		return this._dealerStopAt;
+	}
 	get openTime(){
 		return this._openTime;
+	}
+	addAIs(numberOfAIs){
+		for (let i = 0; i < numberOfAIs; i++){
+			this.players.push(new Player("", this.generateAIName(i + 1), true));
+		}
+	}
+	generateAIName(numberOfAI){
+		return "AI #" + numberOfAI;
 	}
 	canJoin(){
 		return (new Date() - this.started) / 1000 <= this.openTime;

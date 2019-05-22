@@ -1,10 +1,11 @@
 let Card = require("./Card.js");
 
 class Player{
-	constructor(connectionId, name){
+	constructor(connectionId, name, isAI = false){
 		this._connectionId = connectionId;
 		this._name = name;
 		this.resetCards();
+		this._isAI = isAI;
 	}
 	get connectionId(){
 		return this._connectionId;
@@ -17,6 +18,9 @@ class Player{
 	}
 	set cards(value){
 		this._cards = value;
+	}
+	get isAI(){
+		return this._isAI;
 	}
 	giveCard(value, color){
 		this.cards.push(new Card(value, color));
