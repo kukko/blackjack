@@ -12,6 +12,22 @@ class Client{
 	static playerJoined(data){
 		playerJoin(data.name, data.point);
 	}
+	static cardDrawed(data){
+		for (let playerIndex in data.players){
+			let player = data.players[playerIndex];
+			this.findPlayersPointField(player.name).innerHTML = player.point;
+		}
+	}
+	static findPlayersPointField(name){
+		let playerRows = getPlayersList().querySelectorAll("tr");
+		for (let playerIndex in playerRows){
+			let playerRow = playerRows[playerIndex],
+				playerNameField = playerRow.querySelector("td");
+			if (playerNameField.innerHTML === name){
+				return playerNameField.nextSibling;
+			}
+		}
+	}
 }
 function getLoginForm(){
 	return document.getElementById("loginForm");
@@ -20,7 +36,10 @@ function getNameInput(){
 	return document.querySelector("[name=name]");
 }
 function getPlayersTable(){
-	return document.getElementById("players");
+	return document.querySelector("#players");
+}
+function getPlayersList(){
+	return getPlayersTable().querySelector("tbody");
 }
 function enableOrDisableLoginForm(disabled){
 	getLoginForm().querySelector("input").disabled = disabled;
@@ -34,7 +53,7 @@ function playerJoin(name, point){
 	playerPointCol.innerHTML = point;
 	playerRow.appendChild(playerNameCol);
 	playerRow.appendChild(playerPointCol);
-	getPlayersTable().appendChild(playerRow);
+	getPlayersList().appendChild(playerRow);
 }
 document.addEventListener("DOMContentLoaded", (e) => {
 	getLoginForm().addEventListener("submit", (e) => {

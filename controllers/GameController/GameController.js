@@ -7,23 +7,27 @@ class GameController extends WebSocketController{
 		this[message.method](message.data);
 	}
 	login(data){
-		let game = GameService.joinGame(this.uuid, data.name),
-			players = [];
+		let game = GameService.joinGame(this.uuid, data.name);
+		this.setNextStep(game);
 		this.notifyOtherPlayers(game);
-		for (let playerIndex in game.players){
-			let player = game.players[playerIndex];
-			players.push({
-				name: player.name,
-				point: player.valueOfHand()
-			});
-		}
 		this.send(JSON.stringify({
 			method: "joinGame",
 			data: {
 				gameName: game.name,
-				players
+				players: this.getPlayersSendableData(game)
 			}
 		}));
+	}
+	getPlayersSendableData(game){
+		let output = [];
+		for (let playerIndex in game.players){
+			let player = game.players[playerIndex];
+			output.push({
+				name: player.name,
+				point: player.valueOfHand()
+			});
+		}
+		return output;
 	}
 	notifyOtherPlayers(game){
 		let me = game.findPlayerWithConnectionId(this.uuid);
@@ -35,6 +39,27 @@ class GameController extends WebSocketController{
 					data: {
 						name: me.name,
 						point: me.valueOfHand()
+					}
+				}));
+			}
+		}
+	}
+	setNextStep(game){
+		if (typeof game.nextStep === "undefined"){
+			game.nextStep = setTimeout(() => {
+				game.dealCard();
+				this.broadcastPoints(game);
+			}, game.openTime * 1000);
+		}
+	}
+	broadcastPoints(game){
+		for (let playerIndex in game.players){
+			let player = game.players[playerIndex];
+			if (!player.isAI){
+				this.sendTo(player.connectionId, JSON.stringify({
+					method: "cardDrawed",
+					data: {
+						players: this.getPlayersSendableData(game)
 					}
 				}));
 			}

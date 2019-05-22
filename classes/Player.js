@@ -6,6 +6,7 @@ class Player{
 		this._name = name;
 		this.resetCards();
 		this._isAI = isAI;
+		this._stopped = false;
 	}
 	get connectionId(){
 		return this._connectionId;
@@ -22,18 +23,39 @@ class Player{
 	get isAI(){
 		return this._isAI;
 	}
-	giveCard(value, color){
-		this.cards.push(new Card(value, color));
+	get stopped(){
+		return this._stopped;
+	}
+	giveCard(card){
+		this.cards.push(card);
 	}
 	resetCards(){
 		this.cards = [];
 	}
 	valueOfHand(){
-		let output = 0;
+		let output = 0,
+			numberOfAces = 0;
 		for (let cardIndex in this.cards){
-			output += this.cards[cardIndex].value;
+			let cardValue = this.cards[cardIndex].value;
+			if (cardValue === "A"){
+				numberOfAces++;
+			}
+			else{
+				output += cardValue;
+			}
+		}
+		for (let i = 0; i < numberOfAces; i++){
+			if (output + 11 > 21){
+				output++;
+			}
+			else{
+				output += 11;
+			}
 		}
 		return output;
+	}
+	isBusted(){
+		return this.valueOfHand() > 21;
 	}
 }
 
