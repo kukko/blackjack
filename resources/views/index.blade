@@ -4,10 +4,17 @@ html
 		meta(charset="UTF-8")
 		script(src="/resources/js/game.js")
 	body
-		div Játékos név:
+		div Játékos név: 
 			span#playerName
-		div Szoba neve:
+		div Szoba neve: 
 			span#roomName
 		form#loginForm
 			input(name="name" placeholder="Játékos név")
 			button(type="submit") Belépés
+		table#players(style="display:none;")
+			tr
+				th Játékos
+				th Pont
+			tr
+				td Osztó
+				td#dealerPoint 0

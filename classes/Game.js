@@ -1,9 +1,10 @@
 let Player = require("./Player.js");
 
 class Game{
-	constructor(openTime = 15){
+	constructor(name, openTime = 15){
 		this._started = new Date();
 		this._players = [];
+		this._name = name;
 		this._openTime = openTime;
 	}
 	get started(){
@@ -11,6 +12,9 @@ class Game{
 	}
 	get players(){
 		return this._players;
+	}
+	get name(){
+		return this._name;
 	}
 	get openTime(){
 		return this._openTime;
@@ -21,6 +25,13 @@ class Game{
 	addPlayer(connectionId, name){
 		this.players.push(new Player(connectionId, name));
 		return this;
+	}
+	findPlayerWithConnectionId(connectionId){
+		for (let playerIndex in this.players){
+			if (this.players[playerIndex].connectionId === connectionId){
+				return this.players[playerIndex];
+			}
+		}
 	}
 }
 

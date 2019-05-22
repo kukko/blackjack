@@ -7,7 +7,32 @@ class GameController extends WebSocketController{
 		this[message.method](message.data);
 	}
 	login(data){
-		GameService.joinGame(this.uuid, data.name);
+		let game = GameService.joinGame(this.uuid, data.name),
+			me = game.findPlayerWithConnectionId(this.uuid),
+			players = [];
+		for (let playerIndex in game.players){
+			let player = game.players[playerIndex];
+			if (player.connectionId !== this.uuid){
+				this.sendTo(player.connectionId, JSON.stringify({
+					method: "playerJoined",
+					data: {
+						name: me.name,
+						point: me.valueOfHand()
+					}
+				}));
+			}
+			players.push({
+				name: player.name,
+				point: player.valueOfHand()
+			});
+		}
+		this.send(JSON.stringify({
+			method: "joinGame",
+			data: {
+				gameName: game.name,
+				players
+			}
+		}));
 	}
 }
 

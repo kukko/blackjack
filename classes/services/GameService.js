@@ -21,9 +21,12 @@ class GameService{
 		return output;
 	}
 	static createGame(){
-		let game = new Game();
+		let game = new Game(this.generateGameName());
 		this.games.push(game);
 		return game;
+	}
+	static generateGameName(){
+		return "#" + this.games.length + 1;
 	}
 	static joinGame(connectionId, playerName){
 		return this.findGame().addPlayer(connectionId, playerName);
