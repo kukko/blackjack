@@ -31,6 +31,14 @@ class GameService{
 	static joinGame(connectionId, playerName){
 		return this.findGame().addPlayer(connectionId, playerName);
 	}
+	static findPlayersGame(connectionId){
+		for (let gameIndex in this.games){
+			let game = this.games[gameIndex];
+			if (game.playerIsInGame(connectionId)){
+				return game;
+			}
+		}
+	}
 }
 
 module.exports = GameService;

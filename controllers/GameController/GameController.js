@@ -45,9 +45,10 @@ class GameController extends WebSocketController{
 		}
 	}
 	setNextStep(game){
-		if (typeof game.nextStep === "undefined"){
-			game.nextStep = setTimeout(() => {
-				game.dealCard();
+		if (typeof game.gameStarter === "undefined"){
+			game.gameStarter = setTimeout(() => {
+				game.dealCards(2);
+				console.log("ASD");
 				this.broadcastPoints(game);
 			}, game.openTime * 1000);
 		}
@@ -64,6 +65,27 @@ class GameController extends WebSocketController{
 				}));
 			}
 		}
+	}
+	askForCard(){
+		let game = GameService.findPlayersGame(this.uuid);
+		game.playerAskForCard(this.uuid);
+		this.finishRound();
+	}
+	stop(){
+		let game = GameService.findPlayersGame(this.uuid);
+		game.playerStopped(this.uuid);
+		this.finishRound();
+	}
+	finishRound(){
+		let game = GameService.findPlayersGame(this.uuid);
+		if (this.roundIsFinished()){
+			game.dealCards();
+			this.broadcastPoints(game);
+		}
+	}
+	roundIsFinished(){
+		let game = GameService.findPlayersGame(this.uuid);
+		return game.roundIsFinished();
 	}
 }
 

@@ -13,6 +13,7 @@ class Client{
 		playerJoin(data.name, data.point);
 	}
 	static cardDrawed(data){
+		getMovesContainer().style.display = "block";
 		for (let playerIndex in data.players){
 			let player = data.players[playerIndex];
 			this.findPlayersPointField(player.name).innerHTML = player.point;
@@ -41,6 +42,15 @@ function getPlayersTable(){
 function getPlayersList(){
 	return getPlayersTable().querySelector("tbody");
 }
+function getMovesContainer(){
+	return document.getElementById("moves");
+}
+function getAskForCardButton(){
+	return document.getElementById("askForCard");
+}
+function getStopButton(){
+	return document.getElementById("stop");
+}
 function enableOrDisableLoginForm(disabled){
 	getLoginForm().querySelector("input").disabled = disabled;
 	getLoginForm().querySelector("button").disabled = disabled;
@@ -56,12 +66,13 @@ function playerJoin(name, point){
 	getPlayersList().appendChild(playerRow);
 }
 document.addEventListener("DOMContentLoaded", (e) => {
+	let webSocket;
 	getLoginForm().addEventListener("submit", (e) => {
 		e.preventDefault();
 		let nameInput = getNameInput(),
 			name = nameInput.value;
 		enableOrDisableLoginForm(true);
-		let webSocket = new WebSocket("ws://localhost:8888/game");
+		webSocket = new WebSocket("ws://localhost:8888/game");
 		webSocket.onopen = (event) => {
 			webSocket.send(JSON.stringify({
 				method: "login",
@@ -74,5 +85,15 @@ document.addEventListener("DOMContentLoaded", (e) => {
 			let message = JSON.parse(event.data);
 			Client[message.method](message.data);
 		};
+	});
+	getAskForCardButton().addEventListener("click", (e) => {
+		webSocket.send(JSON.stringify({
+			method: "askForCard"
+		}));
+	});
+	getStopButton().addEventListener("click", (e) => {
+		webSocket.send(JSON.stringify({
+			method: "stop"
+		}));
 	});
 });

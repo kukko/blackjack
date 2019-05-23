@@ -1,12 +1,14 @@
 let Card = require("./Card.js");
 
 class Player{
-	constructor(connectionId, name, isAI = false){
+	constructor(connectionId, name, isAI = false, aIStopAt = 15){
 		this._connectionId = connectionId;
 		this._name = name;
 		this.resetCards();
 		this._isAI = isAI;
+		this._aIStopAt = aIStopAt;
 		this._stopped = false;
+		this._askForCard = false;
 	}
 	get connectionId(){
 		return this._connectionId;
@@ -23,8 +25,20 @@ class Player{
 	get isAI(){
 		return this._isAI;
 	}
+	get aIStopAt(){
+		return this._aIStopAt;
+	}
 	get stopped(){
+		if (this.isAI){
+			return this.valueOfHand() >= this.aIStopAt;
+		}
 		return this._stopped;
+	}
+	get askForCard(){
+		return this._askForCard;
+	}
+	set askForCard(value){
+		this._askForCard = value;
 	}
 	giveCard(card){
 		this.cards.push(card);
@@ -56,6 +70,18 @@ class Player{
 	}
 	isBusted(){
 		return this.valueOfHand() > 21;
+	}
+	decided(){
+		return this.isBusted() || this.stopped || this.askForCard;
+	}
+	requestCard(){
+		this.askForCard = true;
+	}
+	stop(){
+		this.stopped = true;
+	}
+	startNewRound(){
+		this.askForCard = false;
 	}
 }
 

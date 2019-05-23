@@ -4,12 +4,11 @@ let Player = require("./Player.js"),
 class Game{
 	constructor(name, dealerStopAt = 15, openTime = 15, numberOfAI = 1){
 		this._started = new Date();
-		this._players = [];
-		this.addAIs(numberOfAI);
 		this._name = name;
 		this._dealerStopAt = dealerStopAt;
+		this._players = [];
+		this.addAIs(numberOfAI);
 		this._openTime = openTime;
-		this._currentPlayer = 0;
 	}
 	get started(){
 		return this._started;
@@ -26,15 +25,9 @@ class Game{
 	get openTime(){
 		return this._openTime;
 	}
-	get currentPlayer(){
-		return this._currentPlayer;
-	}
-	set currentPlayer(value){
-		this._currentPlayer = value;
-	}
 	addAIs(numberOfAIs){
 		for (let i = 0; i < numberOfAIs; i++){
-			this.players.push(new Player("", this.generateAIName(i + 1), true));
+			this.players.push(new Player("", this.generateAIName(i + 1), true, this.dealerStopAt));
 		}
 	}
 	generateAIName(numberOfAI){
@@ -54,10 +47,20 @@ class Game{
 			}
 		}
 	}
-	dealCard(){
-		this.players[this.currentPlayer].giveCard(this.drawCard());
-		if (this.players[this.currentPlayer].isBusted() || this.players[this.currentPlayer].stopped){
-			this.stepPlayer();
+	dealCards(numberOfCards = 1){
+		this.startNewRound();
+		for (let i = 0; i < numberOfCards; i++){
+			for (let playerIndex in this.players){
+				let player = this.players[playerIndex];
+				if (!player.isBusted() && !player.stopped){
+					player.giveCard(this.drawCard());
+				}
+			}
+		}
+	}
+	startNewRound(){
+		for (let playerIndex in this.players){
+			this.players[playerIndex].startNewRound();
 		}
 	}
 	drawCard(){
@@ -67,11 +70,22 @@ class Game{
 			pickedColor = colors[Math.floor(Math.random() * colors.length)];
 		return new Card(pickedValue, pickedColor);
 	}
-	stepPlayer(){
-		this.currentPlayer++;
-		if (this.currentPlayer >= this.players.length){
-			this.currentPlayer = 0;
+	playerAskForCard(connectionId){
+		this.findPlayerWithConnectionId(connectionId).requestCard();
+	}
+	playerStopped(connectionId){
+		this.findPlayerWithConnectionId(connectionId).stop();
+	}
+	playerIsInGame(connectionId){
+		return typeof this.findPlayerWithConnectionId(connectionId) !== "undefined";
+	}
+	roundIsFinished(){
+		for (let playerIndex in this.players){
+			if (!this.players[playerIndex].isAI && !this.players[playerIndex].decided()){
+				return false;
+			}
 		}
+		return true;
 	}
 }
 
