@@ -48,7 +48,6 @@ class GameController extends WebSocketController{
 		if (typeof game.gameStarter === "undefined"){
 			game.gameStarter = setTimeout(() => {
 				game.dealCards(2);
-				console.log("ASD");
 				this.broadcastPoints(game);
 			}, game.openTime * 1000);
 		}
@@ -77,15 +76,23 @@ class GameController extends WebSocketController{
 		this.finishRound();
 	}
 	finishRound(){
-		let game = GameService.findPlayersGame(this.uuid);
-		if (this.roundIsFinished()){
+		let game = GameService.findPlayersGame(this.uuid),
+			gameIsEnded = this.gameIsEnded();
+		if (!gameIsEnded && this.roundIsFinished()){
 			game.dealCards();
 			this.broadcastPoints(game);
+		}
+		else if (gameIsEnded){
+			let winners = game.getWinners();
 		}
 	}
 	roundIsFinished(){
 		let game = GameService.findPlayersGame(this.uuid);
 		return game.roundIsFinished();
+	}
+	gameIsEnded(){
+		let game = GameService.findPlayersGame(this.uuid);
+		return game.gameIsEnded();
 	}
 }
 

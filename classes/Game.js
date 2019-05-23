@@ -87,6 +87,69 @@ class Game{
 		}
 		return true;
 	}
+	gameIsEnded(){
+		for (let playerIndex in this.players){
+			let player = this.players[playerIndex];
+			if (!player.isBusted() && !player.stopped){
+				return false;
+			}
+		}
+		return true;
+	}
+	getWinners(){
+		let output = [];
+		if (this.gameIsEnded()){
+			let playersWithHighestPoint = this.getPlayersWithHighestPoint(),
+				isThereAI = this.isThereAI(playersWithHighestPoint);
+			if (isThereAI){
+				output = this.getAIs(playersWithHighestPoint);
+			}
+			else{
+				output = playersWithHighestPoint;
+			}
+		}
+		return output;
+	}
+	getHighestPoint(){
+		let output = 0;
+		for (let playerIndex in this.players){
+			let player = this.players[playerIndex],
+				valueOfHand = player.valueOfHand();
+			if (valueOfHand > output && valueOfHand <= 21){
+				output = valueOfHand;
+			}
+		}
+		return output;
+	}
+	getPlayersWithHighestPoint(){
+		let output = [],
+			highestPoint = this.getHighestPoint();
+		for (let playerIndex in this.players){
+			let player = this.players[playerIndex];
+			if (player.valueOfHand() === highestPoint){
+				output.push(player);
+			}
+		}
+		return output;
+	}
+	isThereAI(players){
+		for (let playerIndex in players){
+			if (players[playerIndex].isAI){
+				return true;
+			}
+		}
+		return false;
+	}
+	getAIs(players){
+		let output = [];
+		for (let playerIndex in players){
+			let player = players[playerIndex];
+			if (player.isAI){
+				output.push(player);
+			}
+		}
+		return output;
+	}
 }
 
 module.exports = Game;

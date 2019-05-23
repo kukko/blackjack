@@ -34,6 +34,9 @@ class Player{
 		}
 		return this._stopped;
 	}
+	set stopped(value){
+		this._stopped = value;
+	}
 	get askForCard(){
 		return this._askForCard;
 	}
