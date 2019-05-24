@@ -2,7 +2,7 @@ let Player = require("./Player.js"),
 	Card = require("./Card.js");
 
 class Game{
-	constructor(name, dealerStopAt = 15, openTime = 15, numberOfAI = 1){
+	constructor(name, dealerStopAt = 15, openTime = 1, numberOfAI = 1){
 		this._started = new Date();
 		this._name = name;
 		this._dealerStopAt = dealerStopAt;
