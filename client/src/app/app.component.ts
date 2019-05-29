@@ -61,6 +61,9 @@ export class AppComponent {
 	cardDrawed(data){
 		this.setPlayers(data.players)
 	}
+	playerJoined(data){
+		this.addPlayer(new Player(data.name, data.point));
+	}
 	getPlayerByName(playerName){
 		for (let playerIndex in this.players){
 			let player = this.players[playerIndex];
