@@ -24,7 +24,8 @@ class GameController extends WebSocketController{
 			let player = players[playerIndex];
 			output.push({
 				name: player.name,
-				point: player.valueOfHand()
+				point: player.valueOfHand(),
+				cards: player.cards
 			});
 		}
 		return output;
