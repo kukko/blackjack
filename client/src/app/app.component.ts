@@ -82,21 +82,9 @@ export class AppComponent {
 		this.sendMessage("stop");
 	}
 	getCardColor(card){
-		// return {
-		// 	"text-black": ["♠", "♣"].includes(card.color),
-		// 	"text-red": ["♥", "♦"].includes(card.color)
-		// };
-		switch (card._color){
-			case "♠":
-				return "text-black";
-			case "♣":
-				return "text-black";
-			case "♥":
-				return "text-red";
-			case "♦":
-				return "text-red";
-			default:
-				return "text-red";
-		}
+		return {
+			"text-black": ["♠", "♣"].includes(card._color),
+			"text-red": ["♥", "♦"].includes(card._color)
+		};
 	}
 }
